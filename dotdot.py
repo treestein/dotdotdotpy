@@ -1,6 +1,5 @@
 import os
 from requests import get
-from requests.exceptions import RequestException
 from contextlib import closing
 from bs4 import BeautifulSoup
 import logging
@@ -17,7 +16,7 @@ class XDGSupportApplication:
         for path in self.legacy_paths:
             path = path.replace("~", os.environ["HOME"])
             if os.path.isfile(path):
-                return f"LEGACY: {self.name} - {path}."
+                return f"LEGACY:\t{self.name}\t{path}."
 
 
 class XDGSupportArchWiki:
@@ -60,10 +59,8 @@ class XDGSupportArchWiki:
                 if "<br/>" not in p:
                     paths.append(p.strip("\n"))
             return XDGSupportApplication(name, paths)
-                
-        except Exception as e:
+        except (IndexError, AttributeError):
             pass
-
 
     @staticmethod
     def is_good_response(response: object):
@@ -76,6 +73,7 @@ class XDGSupportArchWiki:
 if __name__ == "__main__":
     applications = XDGSupportArchWiki().get_xdg_applications()
     print(f"TOTAL: {len(applications)}")
+    print("\nFound:")
     for application in applications:
         if type(application) is XDGSupportApplication:
             feedback = application.get_feedback()
