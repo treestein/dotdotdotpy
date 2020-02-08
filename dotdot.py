@@ -44,11 +44,13 @@ class XDGSupportArchWiki:
                 )
         for table in tables:
             for tr in table.find("tbody").findAll("tr"):
-                xdg_apps.append(XDGSupportArchWiki.extract_row(tr))
+                app = XDGSupportArchWiki.extract_row(tr)
+                if app:
+                    xdg_apps.append(app)
         return xdg_apps
 
     @staticmethod
-    def extract_row(tr):
+    def extract_row(tr: object) -> XDGSupportApplication:
         try:
             td = tr.findAll("td")
             name = td[0].find("a").contents[0].strip("\n")
